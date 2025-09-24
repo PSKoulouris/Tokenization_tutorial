@@ -1,0 +1,23 @@
+{
+    "name": "Luxembourg Property #123",
+    "description": "Luxury apartment in Luxembourg City center",
+    "image": "ipfs://QmYourImageHash",
+    "attributes": [
+        {
+            "trait_type": "Location",
+            "value": "Luxembourg City"
+        },
+        {
+            "trait_type": "Size",
+            "value": "150 sqm"
+        },
+        {
+            "trait_type": "Valuation",
+            "value": "€850,000"
+        },
+        {
+            "trait_type": "Property Type",
+            "value": "Residential"
+        }
+    ]
+}
