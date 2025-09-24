@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luxembourg Gold Token - Smart Contract Testing Guide</title>
+    <style>
+        @page {
+            margin: 2cm;
+            size: A4;
+        }
+
+        body {
+            font-family: 'Times New Roman', serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+            background: white;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #d4af37;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+            font-style: italic;
+        }
+
+        h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 8px;
+            margin-top: 35px;
+            page-break-after: avoid;
+        }
+
+        h3 {
+            color: #34495e;
+            margin-top: 25px;
+            page-break-after: avoid;
+        }
+
+        .step-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .code-box {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .success-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .checklist {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .checklist ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .checklist li {
+            margin: 8px 0;
+        }
+
+        ol, ul {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #e9ecef;
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        @media print {
+            body {
+                font-size: 12pt;
+            }
+            
+            .step-box, .code-box, .warning-box, .success-box, .checklist {
+                page-break-inside: avoid;
+            }
+
+            h2, h3 {
+                page-break-after: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Luxembourg Gold Token</h1>
+        <p class="subtitle">Smart Contract Testing Guide</p>
+        <p><strong>Version:</strong> 1.0 | <strong>Date:</strong> <span id="currentDate"></span></p>
+    </div>
+
+    <h2>Overview</h2>
+    <p>This comprehensive guide provides step-by-step instructions for testing the Luxembourg Gold Token smart contract. The contract implements an ERC-20 token backed by physical gold reserves, maintaining a 1:1 backing ratio.</p>
+
+    <div class="success-box">
+        <strong>Contract Features:</strong>
+        <ul>
+            <li>ERC-20 compliant gold-backed token</li>
+            <li>Owner-controlled minting and burning</li>
+            <li>Transparent gold reserve tracking</li>
+            <li>Real-time backing ratio calculation</li>
+        </ul>
+    </div>
+
+    <h2>Step 1: Environment Setup</h2>
+    
+    <div class="step-box">
+        <h3>Required Tools</h3>
+        <ol>
+            <li><strong>Remix IDE:</strong> Visit remix.ethereum.org</li>
+            <li><strong>MetaMask Wallet:</strong> Install browser extension</li>
+            <li><strong>Test ETH:</strong> From Sepolia faucet</li>
+            <li><strong>Contract Code:</strong> Luxembourg Gold Token source code</li>
+        </ol>
+    </div>
+
+    <h3>MetaMask Configuration</h3>
+    <ol>
+        <li>Connect MetaMask to <strong>Sepolia test network</strong></li>
+        <li>Get test ETH from sepolia.dev or faucets.chain.link</li>
+        <li>Ensure you have at least 0.1 ETH for gas fees</li>
+    </ol>
+
+    <h3>Remix IDE Setup</h3>
+    <ol>
+        <li>Create new file: <code>LuxembourgGoldToken.sol</code></li>
+        <li>Paste the smart contract code</li>
+        <li>Select Solidity compiler version 0.8.19</li>
+        <li>Set environment to "Injected Provider - MetaMask"</li>
+    </ol>
+
+    <h2>Step 2: Contract Deployment</h2>
+
+    <div class="step-box">
+        <h3>Deployment Process</h3>
+        <ol>
+            <li><strong>Compile Contract:</strong> Click "Compile LuxembourgGoldToken.sol"</li>
+            <li><strong>Check for Errors:</strong> Ensure no compilation errors</li>
+            <li><strong>Deploy Contract:</strong> Go to "Deploy & Run Transactions" tab</li>
+            <li><strong>Select Contract:</strong> Choose "LuxembourgGoldToken"</li>
+            <li><strong>Deploy:</strong> Click "Deploy" button</li>
+            <li><strong>Confirm Transaction:</strong> Approve in MetaMask</li>
+        </ol>
+    </div>
+
+    <div class="warning-box">
+        <strong>Important:</strong> Save the deployed contract address for reference. You'll need it for block explorer verification and future interactions.
+    </div>
+
+    <h2>Step 3: Initial State Verification</h2>
+
+    <div class="code-box">
+<strong>Test Initial Values:</strong>
+1. Call name() → Should return "Luxembourg Gold Token"
+2. Call symbol() → Should return "LUXGOLD"  
+3. Call totalSupply() → Should return 0
+4. Call totalGoldReserves() → Should return 0
+5. Call decimals() → Should return 18
+6. Call owner() → Should return your address
+    </div>
+
+    <div class="success-box">
+        <strong>Expected Results:</strong> All initial values should be correct, with zero supply and reserves until the first minting operation.
+    </div>
+
+    <h2>Step 4: Minting Process Testing</h2>
+
+    <h3>Basic Minting Test</h3>
+    <div class="step-box">
+        <ol>
+            <li><strong>Call mint function:</strong> <code>mint(YOUR_ADDRESS, 1000)</code></li>
+            <li><strong>Confirm transaction</strong> in MetaMask</li>
+            <li><strong>Wait for confirmation</strong> on blockchain</li>
+        </ol>
+    </div>
+
+    <h3>Verify Minting Results</h3>
+    <div class="code-box">
+<strong>Post-Mint Verification:</strong>
+1. Call totalSupply() → Should show 1000
+2. Call totalGoldReserves() → Should show 1000
+3. Call balanceOf(YOUR_ADDRESS) → Should show 1000
+4. Call getGoldPerToken() → Should show 1000000000000000000
+   (This represents 1.0 with 18 decimal places)
+    </div>
+
+    <h3>Multiple Minting Test</h3>
+    <div class="step-box">
+        <ol>
+            <li>Mint additional tokens: <code>mint(YOUR_ADDRESS, 500)</code></li>
+            <li>Verify total supply increases to 1500</li>
+            <li>Verify gold reserves increase to 1500</li>
+            <li>Confirm backing ratio remains 1.0</li>
+        </ol>
+    </div>
+
+    <h2>Step 5: Burning Process Testing</h2>
+
+    <h3>Basic Burning Test</h3>
+    <div class="step-box">
+        <ol>
+            <li><strong>Call burn function:</strong> <code>burn(500)</code></li>
+            <li><strong>Confirm transaction</strong> in MetaMask</li>
+            <li><strong>Wait for confirmation</strong></li>
+        </ol>
+    </div>
+
+    <h3>Verify Burning Results</h3>
+    <div class="code-box">
+<strong>Post-Burn Verification:</strong>
+1. Call totalSupply() → Should show 1000
+2. Call totalGoldReserves() → Should show 1000
+3. Call balanceOf(YOUR_ADDRESS) → Should show 1000
+4. Call getGoldPerToken() → Should still show 1000000000000000000
+   (Ratio should remain 1.0)
+    </div>
+
+    <h2>Step 6: Access Control Testing</h2>
+
+    <div class="step-box">
+        <h3>Owner Permission Testing</h3>
+        <ol>
+            <li><strong>Note current owner:</strong> Record the deploying address</li>
+            <li><strong>Switch MetaMask account</strong> to different address</li>
+            <li><strong>Try to mint:</strong> Call <code>mint(address, amount)</code></li>
+            <li><strong>Expect failure:</strong> Should revert with "Ownable: caller is not the owner"</li>
+            <li><strong>Switch back:</strong> Return to owner account</li>
+            <li><strong>Verify mint works:</strong> Minting should succeed as owner</li>
+        </ol>
+    </div>
+
+    <div class="warning-box">
+        <strong>Security Check:</strong> This test confirms that only the contract owner can mint new tokens, preventing unauthorized token creation.
+    </div>
+
+    <div class="footer">
+        <p><strong>Luxembourg Gold Token Testing Guide</strong></p>
+        <p>This guide provides comprehensive testing procedures for the gold-backed ERC-20 token smart contract.</p>
+        <p><em>Always test on testnets before mainnet deployment</em></p>
+    </div>
+
+    <script>
+        // Set current date
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString();
+    </script>
+</body>
+</html>

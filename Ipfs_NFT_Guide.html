@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPFS for NFTs - Quick Guide</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.2em;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .step {
+            background: white;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .step h3 {
+            color: #34495e;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .code-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-header {
+            background: #1a202c;
+            margin: -15px -15px 10px -15px;
+            padding: 8px 15px;
+            font-size: 0.9em;
+            border-radius: 6px 6px 0 0;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #ffc107;
+            margin: 15px 0;
+        }
+
+        .warning {
+            background: #f8d7da;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #dc3545;
+            margin: 15px 0;
+        }
+
+        .info {
+            background: #d1ecf1;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #17a2b8;
+            margin: 15px 0;
+        }
+
+        .flow-diagram {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .flow-box {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #2196f3;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .arrow {
+            font-size: 1.5em;
+            color: #666;
+        }
+
+        ul, ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        @media (max-width: 768px) {
+            .flow-diagram {
+                flex-direction: column;
+            }
+            .arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>IPFS for NFTs</h1>
+        <p class="subtitle">Quick Implementation Guide</p>
+
+        <div class="info">
+            <strong>What is IPFS?</strong><br>
+            InterPlanetary File System (IPFS) is a distributed storage network that provides decentralized, immutable file storage. For NFTs, IPFS stores metadata and media files off-chain while maintaining decentralization.
+        </div>
+
+        <div class="section">
+            <h2>Why Use IPFS for NFTs?</h2>
+            <ul>
+                <li><strong>Decentralization:</strong> No single point of failure</li>
+                <li><strong>Immutability:</strong> Content-addressed storage prevents tampering</li>
+                <li><strong>Cost-effective:</strong> Much cheaper than on-chain storage</li>
+                <li><strong>Permanence:</strong> Files remain accessible as long as nodes host them</li>
+                <li><strong>Bandwidth:</strong> Distributed access improves performance</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>NFT + IPFS Workflow</h2>
+            <div class="flow-diagram">
+                <div class="flow-box">
+                    <strong>1. Upload Files</strong><br>
+                    Images, videos, metadata to IPFS
+                </div>
+                <div class="arrow">→</div>
+                <div class="flow-box">
+                    <strong>2. Get Hash</strong><br>
+                    IPFS returns content hash
+                </div>
+                <div class="arrow">→</div>
+                <div class="flow-box">
+                    <strong>3. Create NFT</strong><br>
+                    Use IPFS hash in tokenURI
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Using IPFS Desktop</h2>
+            
+            <div class="step">
+                <h3>Step 1: Install IPFS Desktop</h3>
+                <ol>
+                    <li>Download from <strong>ipfs.io</strong></li>
+                    <li>Install and run IPFS Desktop</li>
+                    <li>Wait for node to initialize</li>
+                </ol>
+            </div>
+
+            <div class="step">
+                <h3>Step 2: Add Files</h3>
+                <div class="code-box">
+                    <div class="code-header">Via Desktop Interface</div>
+1. Open IPFS Desktop
+2. Go to "Files" tab
+3. Click "Import" and select your files
+4. Copy the generated hash
+5. Test access: ipfs://YOUR_HASH
+                </div>
+            </div>
+
+            <div class="step">
+                <h3>Step 3: Create Metadata JSON</h3>
+                <div class="code-box">
+                    <div class="code-header">metadata.json</div>
+{
+  "name": "Luxembourg Property #123",
+  "description": "Luxury apartment in Luxembourg City center",
+  "image": "ipfs://QmYourImageHash",
+  "attributes": [
+    {
+      "trait_type": "Location",
+      "value": "Luxembourg City"
+    },
+    {
+      "trait_type": "Size",
+      "value": "150 sqm"
+    },
+    {
+      "trait_type": "Valuation",
+      "value": "€850,000"
+    },
+    {
+      "trait_type": "Property Type",
+      "value": "Residential"
+    }
+  ]
+}
+                </div>
+            </div>
+
+            <div class="step">
+                <h3>Step 4: Upload Metadata</h3>
+                <ol>
+                    <li>Save the JSON as a file (e.g., metadata.json)</li>
+                    <li>Import this JSON file to IPFS Desktop</li>
+                    <li>Copy the metadata IPFS hash</li>
+                    <li>Use this hash in your NFT's tokenURI</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Best Practices</h2>
+            
+            <div class="highlight">
+                <strong>File Organization:</strong>
+                <ul>
+                    <li>Create folder structure: images/, metadata/, documents/</li>
+                    <li>Use consistent naming conventions</li>
+                    <li>Keep original files as backup</li>
+                </ul>
+            </div>
+
+            <div class="highlight">
+                <strong>Metadata Standards:</strong>
+                <ul>
+                    <li>Follow OpenSea metadata standards</li>
+                    <li>Include all relevant attributes</li>
+                    <li>Use proper image formats (PNG, JPG, WebP)</li>
+                    <li>Optimize file sizes for faster loading</li>
+                </ul>
+            </div>
+
+            <div class="warning">
+                <strong>Important Considerations:</strong>
+                <ul>
+                    <li><strong>Pinning:</strong> Files need to be pinned to stay available</li>
+                    <li><strong>Gateway dependency:</strong> Consider multiple IPFS gateways</li>
+                    <li><strong>File permanence:</strong> Use pinning services for long-term storage</li>
+                    <li><strong>Backup strategy:</strong> Keep copies of IPFS hashes and files</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Accessing IPFS Content</h2>
+            
+            <div class="step">
+                <h3>Multiple Access Methods</h3>
+                <div class="code-box">
+                    <div class="code-header">IPFS URLs</div>
+# Direct IPFS protocol
+ipfs://QmYourHash
+
+# Public gateways
+https://ipfs.io/ipfs/QmYourHash
+https://gateway.pinata.cloud/ipfs/QmYourHash
+https://cloudflare-ipfs.com/ipfs/QmYourHash
+
+# Dedicated gateways (faster)
+https://yoursubdomain.mypinata.cloud/ipfs/QmYourHash
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Quick Checklist</h2>
+            <div class="step">
+                <ul>
+                    <li>☐ Upload image/media files to IPFS</li>
+                    <li>☐ Create metadata JSON with proper structure</li>
+                    <li>☐ Upload metadata JSON to IPFS</li>
+                    <li>☐ Get IPFS hash for metadata</li>
+                    <li>☐ Use hash in smart contract's tokenURI</li>
+                    <li>☐ Test IPFS links work in browser</li>
+                    <li>☐ Verify NFT displays correctly in wallets</li>
+                    <li>☐ Pin files for permanent storage</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="info">
+            <strong>Pro Tip:</strong> Use a pinning service like Pinata, Infura, or NFT.Storage for production NFTs to ensure your files remain accessible long-term. Free tier accounts are available for testing and small collections.
+        </div>
+    </div>
+</body>
+</html>
