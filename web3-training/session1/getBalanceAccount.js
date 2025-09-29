@@ -3,7 +3,7 @@
 import Web3 from "web3";
 import BN from "bn.js"; // use bn.js directly
 
-const web3 = new Web3("https://sepolia.infura.io/v3/18e3c9187d6d4c11a36a76051c3f9b9a");
+const web3 = new Web3("https://sepolia.infura.io/v3/24e32d0fd23c43c9a7b60ecad8f42dee");
 
 async function runUtilsDemo() {
   console.log("=== Web3.js Utils Demo ===\n");
@@ -27,7 +27,7 @@ async function runUtilsDemo() {
   console.log("Is 1 ETH < 2 ETH?", a.lt(b), "\n");
 
   // Example: Fetch live Sepolia balance
-  const demoAddress = "0xBD699D332b1EeB550187F96658284657f64B9706";
+  const demoAddress = "0xDAe5fEA3DA1697a8d45B8AF59faa362Cec53C819";
   const balanceWei = await web3.eth.getBalance(demoAddress);
   const balanceEth = web3.utils.fromWei(balanceWei, "ether");
   console.log(`Live Sepolia balance of ${demoAddress} = ${balanceEth} ETH\n`);
