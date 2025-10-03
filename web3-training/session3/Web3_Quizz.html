@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web3.js Methods Training Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .score-bar {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .score-bar h3 {
+            color: #495057;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+
+        .progress-container {
+            background: #e9ecef;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .quiz-content {
+            padding: 30px;
+        }
+
+        .session-divider {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            margin: 20px -30px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .question-card {
+            margin-bottom: 30px;
+            padding: 25px;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .question-card.answered-correct {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+
+        .question-card.answered-wrong {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .question-title {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #495057;
+            flex: 1;
+        }
+
+        .info-icon {
+            background: #667eea;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            margin-left: 10px;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .info-icon:hover {
+            background: #764ba2;
+            transform: scale(1.1);
+        }
+
+        .info-box {
+            display: none;
+            background: #e7f3ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-size: 0.95em;
+            line-height: 1.6;
+            color: #495057;
+        }
+
+        .info-box.show {
+            display: block;
+        }
+
+        .question-text {
+            font-size: 1.05em;
+            margin-bottom: 20px;
+            color: #212529;
+            font-weight: 500;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px 20px;
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1em;
+        }
+
+        .option:hover:not(.disabled) {
+            border-color: #667eea;
+            background: #f8f9ff;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: #e7f3ff;
+        }
+
+        .option.disabled {
+            cursor: not-allowed;
+        }
+
+        .submit-container {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 50px;
+            font-size: 1.1em;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .results h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
+        .results p {
+            font-size: 1.3em;
+            color: #495057;
+            margin-bottom: 30px;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 15px 50px;
+            font-size: 1.1em;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(40, 167, 69, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+            
+            .quiz-content {
+                padding: 20px;
+            }
+            
+            .question-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Web3.js Methods Training Quiz</h1>
+            <p>12-Hour Training Assessment (3 Sessions × 4 Hours)</p>
+        </div>
+
+        <div class="score-bar">
+            <h3>Progress: <span id="answered">0</span> / <span id="total">43</span> Questions</h3>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar">0%</div>
+            </div>
+        </div>
+
+        <div class="quiz-content" id="quizContent"></div>
+
+        <div class="submit-container">
+            <button class="submit-btn" id="submitBtn" disabled>Submit Quiz</button>
+        </div>
+
+        <div class="results" id="results">
+            <h2>🎉 Quiz Complete!</h2>
+            <p id="scoreText"></p>
+            <button class="restart-btn" onclick="restartQuiz()">Take Quiz Again</button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                session: "Session 1: Foundations and Setup",
+                questions: [
+                    {
+                        id: 1,
+                        question: "What is the primary difference between Web2 and Web3 applications?",
+                        options: [
+                            "Web3 applications are faster",
+                            "Web3 applications use decentralized architecture and blockchain",
+                            "Web3 applications are cheaper to build",
+                            "Web3 applications don't need databases"
+                        ],
+                        correct: 1,
+                        info: "Web3 represents a paradigm shift from centralized servers (Web2) to decentralized blockchain networks. In Web2, data and logic are controlled by central authorities (companies/servers), while Web3 distributes control across a network of nodes, giving users ownership of their data and enabling trustless interactions through smart contracts."
+                    },
+                    {
+                        id: 2,
+                        question: "What is the role of a Provider in Web3.js?",
+                        options: [
+                            "To sign transactions",
+                            "To connect to the blockchain and read/write data",
+                            "To store private keys",
+                            "To deploy smart contracts only"
+                        ],
+                        correct: 1,
+                        info: "A Provider in Web3.js is a connection to the blockchain that enables communication with Ethereum nodes. It can be HTTP, WebSocket, or IPC based. You initialize it with: const web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/YOUR-PROJECT-ID')). The provider allows you to read blockchain data and send transactions. Common providers include Infura, Alchemy, or local nodes."
+                    },
+                    {
+                        id: 3,
+                        question: "When connecting to MetaMask using window.ethereum.request({ method: 'eth_requestAccounts' }), what happens?",
+                        options: [
+                            "It automatically connects without user permission",
+                            "It prompts the user to approve the connection",
+                            "It creates a new wallet",
+                            "It transfers ETH to the dApp"
+                        ],
+                        correct: 1,
+                        info: "The eth_requestAccounts method triggers MetaMask's permission dialog, asking the user to explicitly approve the dApp's request to access their wallet addresses. This is a security feature that ensures users control which dApps can see their addresses. Without user approval, the dApp cannot access any wallet information. After approval, you can use window.ethereum as a provider for Web3.js."
+                    },
+                    {
+                        id: 4,
+                        question: "What is gas in Ethereum transactions?",
+                        options: [
+                            "A type of cryptocurrency",
+                            "The computational cost to execute operations on Ethereum",
+                            "The speed of transaction processing",
+                            "A measure of data storage"
+                        ],
+                        correct: 1,
+                        info: "Gas represents the computational effort required to execute operations on the Ethereum network. Every operation (addition, storage write, etc.) costs a specific amount of gas. Users pay for gas in ETH to compensate miners/validators for processing transactions. Gas prevents infinite loops and spam by making each computational step cost real money. Gas prices fluctuate based on network demand."
+                    },
+                    {
+                        id: 5,
+                        question: "How many Wei are in 1 Ether?",
+                        options: [
+                            "1,000",
+                            "1,000,000",
+                            "1,000,000,000",
+                            "1,000,000,000,000,000,000 (10^18)"
+                        ],
+                        correct: 3,
+                        info: "Wei is the smallest unit of Ether, similar to how cents relate to dollars. 1 Ether = 10^18 Wei (1 followed by 18 zeros). This large number allows for precise calculations and micropayments. Web3.js provides utility functions like web3.utils.toWei('1', 'ether') and web3.utils.fromWei('1000000000000000000', 'ether') to convert between these units easily, as working with such large numbers directly would be error-prone."
+                    },
+                    {
+                        id: 6,
+                        question: "Which of the following operations does NOT require gas fees?",
+                        options: [
+                            "Sending ETH to another address",
+                            "Reading account balance using web3.eth.getBalance()",
+                            "Deploying a smart contract",
+                            "Transferring ERC-20 tokens"
+                        ],
+                        correct: 1,
+                        info: "Reading data from the blockchain (view/pure functions) is free because it doesn't change the blockchain state. Your node simply queries existing data using methods like web3.eth.getBalance() or contract.methods.balanceOf().call(). However, any operation that modifies the blockchain state (transfers, contract deployments, state changes) requires gas because it needs to be processed by miners/validators and permanently stored across all nodes in the network."
+                    },
+                    {
+                        id: 7,
+                        question: "What is a transaction hash?",
+                        options: [
+                            "The encrypted private key",
+                            "A unique identifier for a transaction",
+                            "The gas price of a transaction",
+                            "The recipient's address"
+                        ],
+                        correct: 1,
+                        info: "A transaction hash (or txHash) is a unique 66-character hexadecimal string that identifies a specific transaction on the blockchain. It's generated using cryptographic hashing of the transaction data. Think of it like a tracking number for a package - you can use it on block explorers (like Etherscan) to look up transaction details, status, and confirmation. In Web3.js, you get this from web3.eth.sendTransaction() or as the transactionHash in receipts."
+                    },
+                    {
+                        id: 8,
+                        question: "What is the purpose of Sepolia testnet?",
+                        options: [
+                            "To mine real Ether",
+                            "To test dApps without spending real money",
+                            "To store production data",
+                            "To increase transaction speed"
+                        ],
+                        correct: 1,
+                        info: "Sepolia is an Ethereum test network (testnet) that mirrors mainnet functionality but uses worthless test ETH. It allows developers to test smart contracts and dApps in a real blockchain environment without financial risk. Test ETH can be obtained for free from faucets. Other testnets include Goerli and Holesky. Always test on testnets before deploying to mainnet where transactions use real money."
+                    },
+                    {
+                        id: 9,
+                        question: "Why are most Web3.js methods asynchronous (returning promises)?",
+                        options: [
+                            "To make code look cleaner",
+                            "Because blockchain operations involve network calls that take time",
+                            "To prevent errors",
+                            "To save memory"
+                        ],
+                        correct: 1,
+                        info: "Blockchain operations involve network communication with nodes, which takes time (milliseconds to seconds). Web3.js methods return promises or use callbacks to handle this asynchronicity. Using async/await or .then() allows JavaScript to continue executing other code while waiting for blockchain responses, preventing the UI from freezing. For example, web3.eth.getBalance() requires sending a request to a node, waiting for processing, and receiving the response - all network-dependent operations."
+                    },
+                    {
+                        id: 10,
+                        question: "What should you always do when interacting with blockchain functions?",
+                        options: [
+                            "Use console.log() statements",
+                            "Wrap operations in try-catch blocks",
+                            "Disable error messages",
+                            "Ignore errors"
+                        ],
+                        correct: 1,
+                        info: "Blockchain operations can fail for many reasons: insufficient funds, network issues, user rejection, invalid addresses, gas estimation failures, etc. Using try-catch blocks allows you to gracefully handle these errors, provide meaningful feedback to users, and prevent your application from crashing. Always anticipate failures in Web3 development and provide clear error messages to guide users."
+                    }
+                ]
+            },
+            {
+                session: "Session 2: Smart Contract Interaction",
+                questions: [
+                    {
+                        id: 11,
+                        question: "What is an ABI (Application Binary Interface)?",
+                        options: [
+                            "A programming language for smart contracts",
+                            "A JSON description of a contract's functions and events",
+                            "A type of cryptocurrency",
+                            "A blockchain consensus mechanism"
+                        ],
+                        correct: 1,
+                        info: "An ABI is like a contract's 'instruction manual' that tells your JavaScript code how to interact with the smart contract. It's a JSON array describing all functions (names, parameters, return types) and events the contract exposes. Without the ABI, your code wouldn't know what functions exist, what parameters they expect, or how to encode/decode data. Think of it as the bridge between your high-level JavaScript and the contract's bytecode."
+                    },
+                    {
+                        id: 12,
+                        question: "How do you create a contract instance in Web3.js?",
+                        options: [
+                            "web3.eth.contract(ABI, address)",
+                            "new web3.eth.Contract(ABI, address)",
+                            "web3.contract.new(address, ABI)",
+                            "web3.createContract(ABI, address)"
+                        ],
+                        correct: 1,
+                        info: "To interact with a deployed smart contract in Web3.js, you create an instance using: const contract = new web3.eth.Contract(ABI, contractAddress). The ABI parameter is the contract's interface definition (usually a JSON array), and the address is where the contract is deployed on the blockchain. This contract instance gives you access to all the contract's methods for reading data and sending transactions."
+                    },
+                    {
+                        id: 13,
+                        question: "Which function in ERC-20 allows you to check how many tokens an address owns?",
+                        options: [
+                            "totalSupply()",
+                            "transfer()",
+                            "balanceOf()",
+                            "approve()"
+                        ],
+                        correct: 2,
+                        info: "The balanceOf(address) function is a standard ERC-20 view function that returns the token balance of any address. In Web3.js, you call it with: contract.methods.balanceOf(address).call(). It's read-only (no gas required) and returns a string representing the number of tokens (in the token's smallest unit). You'll need to divide by the token's decimals to get the human-readable amount."
+                    },
+                    {
+                        id: 14,
+                        question: "Why do ERC-20 tokens have a decimals() function?",
+                        options: [
+                            "To count decimal points",
+                            "To define the divisibility and display formatting of tokens",
+                            "To calculate gas fees",
+                            "To determine token price"
+                        ],
+                        correct: 1,
+                        info: "The decimals() function returns how many decimal places a token uses (commonly 18, like ETH). Blockchains don't handle decimal numbers well, so tokens store amounts as large integers. If a token has 18 decimals, 1 token = 1 × 10^18 base units. This allows for fractional ownership. When displaying token amounts, you divide the raw value by 10^decimals using web3.utils.fromWei() or similar calculations."
+                    },
+                    {
+                        id: 15,
+                        question: "What is the main difference between calling a 'view' function and a state-changing function?",
+                        options: [
+                            "View functions are faster",
+                            "View functions don't cost gas, state-changing functions do",
+                            "View functions are more secure",
+                            "There is no difference"
+                        ],
+                        correct: 1,
+                        info: "View functions only read blockchain data without modifying it, so they're free (no gas cost) and return results immediately. You call them with .call() in Web3.js: contract.methods.balanceOf(address).call(). State-changing functions modify the blockchain (transfers, updates, etc.), require gas fees, and need transaction confirmation. You call them with .send(): contract.methods.transfer(to, amount).send({ from: account })."
+                    },
+                    {
+                        id: 16,
+                        question: "Why is the approve() function necessary in ERC-20 tokens?",
+                        options: [
+                            "To validate token ownership",
+                            "To allow another address to spend tokens on your behalf",
+                            "To mint new tokens",
+                            "To check token balance"
+                        ],
+                        correct: 1,
+                        info: "The approve() function implements the 'allowance' pattern. You must approve a contract/address before it can move your tokens. This is crucial for DEXs (decentralized exchanges) and DeFi protocols - you approve them to spend X tokens, then they can execute trades/operations. It's a security feature: without approval, no contract can touch your tokens. Call it with: contract.methods.approve(spenderAddress, amount).send({ from: yourAddress })."
+                    },
+                    {
+                        id: 17,
+                        question: "Why should you estimate gas before sending a transaction?",
+                        options: [
+                            "To predict transaction time",
+                            "To ensure the transaction has enough gas to complete successfully",
+                            "To calculate token prices",
+                            "To check network status"
+                        ],
+                        correct: 1,
+                        info: "Gas estimation simulates your transaction to determine how much gas it will consume. If you don't provide enough gas, the transaction fails but you still lose the gas fee. Use web3.eth.estimateGas({ to: address, data: encodedData }) to get the estimate. It's good practice to add 10-20% buffer to the estimate to account for state changes between estimation and execution."
+                    },
+                    {
+                        id: 18,
+                        question: "What is the purpose of events in smart contracts?",
+                        options: [
+                            "To reduce gas costs",
+                            "To create logs that dApps can monitor and react to",
+                            "To store data permanently",
+                            "To speed up transactions"
+                        ],
+                        correct: 1,
+                        info: "Events are the smart contract's way of communicating with the outside world. When emitted, they're stored in transaction logs (not in contract storage). Events are cheap compared to storage (400 gas vs 20,000 gas), making them ideal for logging actions. DApps listen to events using contract.events.EventName() to update their UI in real-time. For example, a DEX emits 'Swap' events that trading interfaces monitor to show recent trades."
+                    },
+                    {
+                        id: 19,
+                        question: "What does the transaction receipt contain after a transaction is confirmed?",
+                        options: [
+                            "Only the transaction hash",
+                            "Status, gas used, block number, and event logs",
+                            "Only the sender's address",
+                            "Just the gas price"
+                        ],
+                        correct: 1,
+                        info: "After sending a transaction, you can get the receipt with web3.eth.getTransactionReceipt(txHash). The receipt contains: status (true/1 for success, false/0 for failure), gasUsed, blockNumber, blockHash, and logs (emitted events). This information is crucial for confirming transaction success and processing emitted events. You can also use .on('receipt', callback) when sending transactions to automatically receive the receipt."
+                    },
+                    {
+                        id: 20,
+                        question: "How can you listen only to Transfer events involving a specific address?",
+                        options: [
+                            "By reading all events and filtering manually",
+                            "By using event filters with indexed parameters",
+                            "By deploying a new contract",
+                            "By increasing gas limit"
+                        ],
+                        correct: 1,
+                        info: "Events can have 'indexed' parameters (up to 3), which allows efficient filtering. For Transfer events: event Transfer(address indexed from, address indexed to, uint256 value). In Web3.js, you can filter using contract.events.Transfer({ filter: { from: userAddress } }) to watch only transfers FROM that address, or { filter: { to: userAddress } } for transfers TO that address. You can also use contract.getPastEvents() with filters to retrieve historical events."
+                    },
+                    {
+                        id: 21,
+                        question: "When reading data from multiple contract functions, what's the most efficient approach?",
+                        options: [
+                            "Call each function separately in sequence",
+                            "Use Promise.all() to call them in parallel",
+                            "Call them in a loop",
+                            "Read the entire contract state"
+                        ],
+                        correct: 1,
+                        info: "When you need multiple pieces of data (name, symbol, decimals, balance), use Promise.all([contract.methods.name().call(), contract.methods.symbol().call(), contract.methods.decimals().call()]) to make concurrent requests. This is much faster than sequential calls because network latency is often the bottleneck. Each request is independent, so they can execute in parallel. This pattern is crucial for good UX."
+                    },
+                    {
+                        id: 22,
+                        question: "When a transaction reverts, what happens?",
+                        options: [
+                            "The transaction succeeds but with warnings",
+                            "All state changes are undone and gas is consumed",
+                            "The gas is refunded",
+                            "The transaction is cancelled before execution"
+                        ],
+                        correct: 1,
+                        info: "When a transaction reverts (due to require/revert statements), it's like rolling back a database transaction - all state changes are undone as if the transaction never happened. However, gas is still consumed because miners/validators did work executing the transaction up to the revert point. The revert message (error string) is included in the transaction receipt. Always check receipt.status to confirm success."
+                    },
+                    {
+                        id: 23,
+                        question: "In DeFi, why do you typically need two transactions to swap tokens?",
+                        options: [
+                            "To increase security",
+                            "First to approve the DEX to spend your tokens, second to execute the swap",
+                            "To reduce gas costs",
+                            "To verify token authenticity"
+                        ],
+                        correct: 1,
+                        info: "This two-step process is the ERC-20 approve-transfer pattern: (1) You call contract.methods.approve(dexAddress, amount).send() on your token contract, allowing the DEX contract to spend X tokens from your wallet. (2) You call the DEX's swap function, which uses transferFrom() to move your approved tokens. Some DEXs offer 'permit' functionality (EIP-2612) that combines these steps using signatures."
+                    },
+                    {
+                        id: 24,
+                        question: "What's the difference between contract.events and contract.getPastEvents()?",
+                        options: [
+                            "They do the same thing",
+                            "events listens to future events, getPastEvents() retrieves past events",
+                            "events is for mainnet only",
+                            "getPastEvents() costs gas"
+                        ],
+                        correct: 1,
+                        info: "contract.events.EventName().on('data', callback) sets up a real-time listener for future events - as new events are emitted, your callback is triggered immediately. This is for live monitoring. contract.getPastEvents('EventName', { fromBlock: 0, toBlock: 'latest' }) retrieves historical events from the blockchain - useful for loading past transaction history. Neither costs gas since they're read operations. Combining both gives you complete event coverage."
+                    },
+                    {
+                        id: 25,
+                        question: "What should you NEVER do with real mainnet transactions during development?",
+                        options: [
+                            "Use a testnet instead",
+                            "Test with real user funds",
+                            "Estimate gas properly",
+                            "Monitor transactions"
+                        ],
+                        correct: 1,
+                        info: "NEVER test on mainnet with real funds during development! Always use testnets (Sepolia, Goerli) where ETH is free and mistakes don't cost real money. Even experienced developers make mistakes - wrong addresses, insufficient gas, contract bugs. Only deploy to mainnet after thorough testing. Use test accounts with small amounts for final mainnet testing before going live. A single mistake on mainnet could result in permanent, irreversible loss of funds."
+                    }
+                ]
+            },
+            {
+                session: "Session 3: Advanced Integration",
+                questions: [
+                    {
+                        id: 26,
+                        question: "Why use React Context for Web3 state management?",
+                        options: [
+                            "To make the code longer",
+                            "To avoid prop drilling and centralize Web3 state across components",
+                            "To increase gas costs",
+                            "To store private keys"
+                        ],
+                        correct: 1,
+                        info: "React Context provides a way to share Web3 state (web3 instance, account, balance, chainId) across your entire component tree without passing props through every level (prop drilling). Instead of passing web3 through 5 components to reach the one that needs it, Context makes it available anywhere via useWeb3() hook. This centralizes connection logic, makes state updates consistent, and simplifies component code. It's the standard pattern for global state in React dApps."
+                    },
+                    {
+                        id: 27,
+                        question: "What should happen when a user changes their MetaMask account?",
+                        options: [
+                            "Nothing, keep using the old account",
+                            "Automatically detect the change and update the dApp state",
+                            "Crash the application",
+                            "Force page reload"
+                        ],
+                        correct: 1,
+                        info: "MetaMask fires the 'accountsChanged' event when users switch accounts. Your dApp should listen for this event using window.ethereum.on('accountsChanged', callback) and update its state accordingly - disconnect old account, connect new one, update balances and UI. Similarly, the 'chainChanged' event fires when users switch networks. Proper handling of these events prevents bugs and confusion. Users expect dApps to reflect their current MetaMask state in real-time."
+                    },
+                    {
+                        id: 28,
+                        question: "Where is NFT metadata typically stored?",
+                        options: [
+                            "On the blockchain in the contract",
+                            "On IPFS or similar decentralized storage, referenced by tokenURI",
+                            "In the wallet",
+                            "In a database"
+                        ],
+                        correct: 1,
+                        info: "NFT contracts store minimal data on-chain (owner, token ID) because blockchain storage is expensive. The tokenURI(tokenId) function returns a URL (often IPFS hash) pointing to JSON metadata containing the image, attributes, description. IPFS ensures permanence - the content is addressed by hash, so the URL always points to the same data. Some projects use Arweave or centralized servers, but IPFS is most common. Your dApp fetches this metadata to display NFT images and properties."
+                    },
+                    {
+                        id: 29,
+                        question: "What's the main advantage of ERC-1155 over ERC-721?",
+                        options: [
+                            "ERC-1155 tokens are more valuable",
+                            "ERC-1155 can batch transfer multiple tokens in one transaction",
+                            "ERC-1155 requires less code",
+                            "ERC-1155 doesn't need gas"
+                        ],
+                        correct: 1,
+                        info: "ERC-1155 is a 'multi-token' standard that combines fungible and non-fungible tokens in one contract. Its killer feature is batch operations: transfer multiple different tokens in a single transaction, dramatically reducing gas costs. For example, in a game, you can transfer 5 swords + 10 potions + 1 shield in one transaction instead of 16 separate transactions. ERC-1155 also reduces deployment costs since one contract can represent many token types."
+                    },
+                    {
+                        id: 30,
+                        question: "Why is proper loading state management crucial in Web3 dApps?",
+                        options: [
+                            "To increase gas costs",
+                            "To prevent user confusion and multiple transaction submissions during async operations",
+                            "To make the UI prettier",
+                            "To reduce code size"
+                        ],
+                        correct: 1,
+                        info: "Blockchain operations take time (seconds to minutes). Without loading states, users might: click buttons multiple times (sending duplicate transactions), think the app is broken, or see stale data. Good UX shows spinners/loading states, disables buttons during operations, and provides progress feedback (e.g., 'Transaction pending...', 'Waiting for confirmation...'). This prevents double-spending, reduces user frustration, and provides transparency about what's happening."
+                    },
+                    {
+                        id: 31,
+                        question: "What information should you display when a transaction fails?",
+                        options: [
+                            "The raw error object",
+                            "Nothing, hide the error",
+                            "A user-friendly message explaining what went wrong and possible solutions",
+                            "Only the transaction hash"
+                        ],
+                        correct: 2,
+                        info: "Raw error messages from Web3.js are technical and confusing for users. Translate errors into user-friendly language: 'Insufficient funds' instead of 'Error: insufficient funds for gas * price + value', 'Transaction rejected by user' instead of 'User denied transaction signature'. Include actionable solutions: 'Please add more ETH to your wallet' or 'Try increasing gas limit'. Log technical details to console for debugging while showing clear messages to users. Good error handling builds trust and helps users fix issues."
+                    },
+                    {
+                        id: 32,
+                        question: "What does the tokenOfOwnerByIndex() function do in ERC-721 Enumerable?",
+                        options: [
+                            "Returns the token URI",
+                            "Returns the token ID owned by an address at a specific index",
+                            "Returns the token price",
+                            "Transfers the token"
+                        ],
+                        correct: 1,
+                        info: "ERC-721 Enumerable extension adds enumeration capabilities. If an address owns tokens [5, 12, 27], tokenOfOwnerByIndex(address, 0) returns 5, index 1 returns 12, index 2 returns 27. Combined with balanceOf(), this lets you iterate through all tokens owned by an address. Not all ERC-721 contracts implement enumeration (it costs extra gas), but it's essential for wallet displays and NFT galleries. Alternative: index events off-chain for better performance."
+                    },
+                    {
+                        id: 33,
+                        question: "When fetching NFT metadata from IPFS, what might you need to do?",
+                        options: [
+                            "Pay gas fees",
+                            "Convert the IPFS URL to an HTTP gateway URL",
+                            "Deploy a smart contract",
+                            "Approve token spending"
+                        ],
+                        correct: 1,
+                        info: "tokenURI() often returns ipfs://QmHash.... Browsers can't load IPFS URLs directly, so you need an IPFS gateway. Convert ipfs://QmHash to https://ipfs.io/ipfs/QmHash or use other gateways like Cloudflare, Pinata. Some projects return https:// URLs directly. You might also encounter ar:// (Arweave) or data URIs. Always handle different URI formats. Consider running your own IPFS node for reliability, or use multiple gateways with fallbacks."
+                    },
+                    {
+                        id: 34,
+                        question: "When fetching data for 100 NFTs, what's the best approach?",
+                        options: [
+                            "Fetch all 100 sequentially",
+                            "Fetch all 100 in parallel using Promise.all()",
+                            "Batch them in groups (e.g., 10 at a time) to avoid overwhelming the RPC provider",
+                            "Don't fetch, show placeholder images"
+                        ],
+                        correct: 2,
+                        info: "Fetching 100 items in parallel might hit RPC rate limits or timeout. Batching (e.g., 10 concurrent requests, then next 10) balances speed and reliability. Use a queue system or libraries like p-limit. This prevents: rate limit errors, browser connection limits, memory issues. For large collections, implement pagination (load 20, show 'Load More') or virtualization (only render visible items). Consider indexing services like The Graph for better performance than direct RPC calls."
+                    },
+                    {
+                        id: 35,
+                        question: "In an NFT marketplace, why check if your dApp is approved before trying to transfer an NFT?",
+                        options: [
+                            "To reduce gas costs",
+                            "To avoid transaction failure and provide clear user instructions",
+                            "To speed up transactions",
+                            "To get better prices"
+                        ],
+                        correct: 1,
+                        info: "Before a marketplace can transfer your NFT, you must approve it using contract.methods.setApprovalForAll(marketplaceAddress, true).send() or approve(marketplaceAddress, tokenId).send(). Check approval status with isApprovedForAll(owner, operator).call() or getApproved(tokenId).call(). If not approved, show 'Approve Collection' button before 'List for Sale'. This prevents transaction failures and provides a smoother UX. Many marketplaces separate approval and listing into two steps."
+                    },
+                    {
+                        id: 36,
+                        question: "How can you update the UI when someone buys an NFT from your marketplace?",
+                        options: [
+                            "Refresh the page every second",
+                            "Listen to Transfer events and update the UI when relevant events are detected",
+                            "Ask users to manually refresh",
+                            "Check every transaction on the blockchain"
+                        ],
+                        correct: 1,
+                        info: "Listen to contract events with contract.events.Transfer().on('data', (event) => {...}). When a Transfer event fires where your marketplace is involved, update the UI immediately - remove the sold NFT, update listings, show notifications. This provides real-time updates without polling. You can filter events to only those relevant to your marketplace using the filter option. Remember to unsubscribe from events when components unmount to prevent memory leaks."
+                    },
+                    {
+                        id: 37,
+                        question: "To support multiple blockchains (Ethereum, Polygon, BSC), what should your dApp do?",
+                        options: [
+                            "Create separate codebases for each chain",
+                            "Detect the current chain and use chain-specific contract addresses and RPC endpoints",
+                            "Only support one chain",
+                            "Force users to use Ethereum only"
+                        ],
+                        correct: 1,
+                        info: "Store chain-specific configuration (RPC URLs, contract addresses, block explorers) in a config object indexed by chainId. When users switch networks, detect the change with window.ethereum.on('chainChanged', callback), update your Web3 instance with the new provider, and use the appropriate addresses. For example: const contractAddress = CONTRACTS[chainId].nftMarketplace. This lets one codebase support multiple chains."
+                    },
+                    {
+                        id: 38,
+                        question: "Why might you want to wait for multiple block confirmations (e.g., 3 blocks) for important transactions?",
+                        options: [
+                            "To reduce gas costs",
+                            "To reduce the risk of chain reorganization reversing the transaction",
+                            "To speed up execution",
+                            "To get better exchange rates"
+                        ],
+                        correct: 1,
+                        info: "After 1 confirmation, a transaction is in the blockchain, but rare chain reorganizations (reorgs) can reverse recent blocks. Waiting for more confirmations reduces this risk exponentially. For small transactions, 1-2 confirmations suffice. For large amounts (exchanges, big sales), wait for 10+ confirmations. In Web3.js, you can use: web3.eth.sendTransaction().on('confirmation', (confirmationNumber, receipt) => {...}). Bitcoin typically requires 6 confirmations for large amounts."
+                    },
+                    {
+                        id: 39,
+                        question: "Which approach typically costs less gas?",
+                        options: [
+                            "Making multiple small transactions",
+                            "Batching operations into fewer transactions when possible",
+                            "Using higher gas prices",
+                            "Sending transactions during peak hours"
+                        ],
+                        correct: 1,
+                        info: "Each transaction has base overhead (21000 gas). Batching saves gas by amortizing this overhead. For example, ERC-1155's batch transfer costs ~50% less than multiple ERC-721 transfers. Some contracts offer batch functions (e.g., batch mint). However, there are tradeoffs: larger transactions cost more if they fail, and may hit gas limits. For expensive operations, batch when practical but keep transactions atomic (all-or-nothing) for important actions."
+                    },
+                    {
+                        id: 40,
+                        question: "What should you NEVER do in a production dApp?",
+                        options: [
+                            "Validate user inputs",
+                            "Store private keys in the frontend code or browser storage",
+                            "Show error messages",
+                            "Use testnet for development"
+                        ],
+                        correct: 1,
+                        info: "NEVER store private keys in frontend code, localStorage, or sessionStorage - they're easily accessible to anyone. Users should keep keys in their wallets (MetaMask, Ledger). Your dApp should only interact with wallets through standard APIs (window.ethereum). Even encrypted keys in the frontend are risky. For backend operations needing keys, use secure key management systems (AWS KMS, Azure Key Vault) with proper access controls. Frontend security is about minimizing what you handle, not how you encrypt it."
+                    },
+                    {
+                        id: 41,
+                        question: "What is the typical flow for a user interacting with a dApp for the first time?",
+                        options: [
+                            "Create account → Buy crypto → Use dApp",
+                            "Connect wallet → Approve the dApp → Interact with smart contracts",
+                            "Install MetaMask → Transfer funds → Close browser",
+                            "Read documentation → Email support → Wait for approval"
+                        ],
+                        correct: 1,
+                        info: "The standard Web3 onboarding: (1) User installs a wallet (MetaMask), (2) Visits your dApp and clicks 'Connect Wallet', (3) Approves connection in MetaMask popup via eth_requestAccounts, (4) Your dApp can now read their address and balance using web3.eth.getAccounts(), (5) When they want to transact, they approve each transaction in MetaMask. This flow is consistent across most dApps. Good UX includes: clear instructions for first-time users, links to MetaMask installation, testnet options for practice."
+                    },
+                    {
+                        id: 42,
+                        question: "A student writes const balance = web3.eth.getBalance(account) and tries to display it immediately. What's wrong?",
+                        options: [
+                            "Nothing, it should work",
+                            "Missing 'await' keyword - getBalance() is asynchronous",
+                            "Wrong provider",
+                            "Invalid account format"
+                        ],
+                        correct: 1,
+                        info: "web3.eth.getBalance() returns a Promise, not the actual balance. Without await (or .then()), balance is a Promise object, not the numeric value. This is a common mistake. Always use await with async blockchain functions: const balance = await web3.eth.getBalance(account). Make sure the containing function is marked async. This applies to most Web3.js operations. Forgetting await leads to displaying '[object Promise]' or undefined values."
+                    },
+                    {
+                        id: 43,
+                        question: "Before launching a dApp to mainnet, what should you definitely do?",
+                        options: [
+                            "Test only on your local machine",
+                            "Thoroughly test on testnets, get code audited (for contracts), and have a security review",
+                            "Deploy immediately to save time",
+                            "Skip testing to launch faster"
+                        ],
+                        correct: 1,
+                        info: "Before mainnet launch: (1) Extensively test on testnets with various scenarios and edge cases, (2) Get smart contracts professionally audited by firms like OpenZeppelin, ConsenSys Diligence, or Trail of Bits, (3) Conduct internal security reviews of frontend and backend code, (4) Perform penetration testing, (5) Have a bug bounty program ready, (6) Prepare incident response plans. Rushing to mainnet without proper testing and audits can result in catastrophic losses. Many major hacks could have been prevented with thorough auditing."
+                    }
+                ]
+            }
+        ];
+
+        let userAnswers = {};
+
+        function renderQuiz() {
+            const quizContent = document.getElementById('quizContent');
+            let html = '';
+            
+            quizData.forEach((session, sessionIndex) => {
+                html += `<div class="session-divider">${session.session}</div>`;
+                
+                session.questions.forEach((q) => {
+                    html += `
+                        <div class="question-card" id="question-${q.id}">
+                            <div class="question-header">
+                                <div class="question-title">Question ${q.id}</div>
+                                <div class="info-icon" onclick="toggleInfo(${q.id})">i</div>
+                            </div>
+                            <div class="info-box" id="info-${q.id}">
+                                ${q.info}
+                            </div>
+                            <div class="question-text">${q.question}</div>
+                            <div class="options" id="options-${q.id}">
+                                ${q.options.map((option, index) => `
+                                    <div class="option" data-question="${q.id}" data-index="${index}" onclick="selectOption(${q.id}, ${index})">
+                                        ${String.fromCharCode(65 + index)}) ${option}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+            
+            quizContent.innerHTML = html;
+            document.getElementById('total').textContent = getTotalQuestions();
+        }
+
+        function getTotalQuestions() {
+            return quizData.reduce((sum, session) => sum + session.questions.length, 0);
+        }
+
+        function toggleInfo(questionId) {
+            const infoBox = document.getElementById(`info-${questionId}`);
+            infoBox.classList.toggle('show');
+        }
+
+        function selectOption(questionId, optionIndex) {
+            if (document.getElementById('results').classList.contains('show')) {
+                return;
+            }
+
+            userAnswers[questionId] = optionIndex;
+            
+            const questionCard = document.getElementById(`question-${questionId}`);
+            const options = questionCard.querySelectorAll('.option');
+            
+            options.forEach((option, index) => {
+                option.classList.remove('selected');
+                if (index === optionIndex) {
+                    option.classList.add('selected');
+                }
+            });
+
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const answered = Object.keys(userAnswers).length;
+            const total = getTotalQuestions();
+            const percentage = Math.round((answered / total) * 100);
+            
+            document.getElementById('answered').textContent = answered;
+            document.getElementById('progressBar').style.width = percentage + '%';
+            document.getElementById('progressBar').textContent = percentage + '%';
+            
+            document.getElementById('submitBtn').disabled = answered < total;
+        }
+
+        function submitQuiz() {
+            let correctCount = 0;
+            const total = getTotalQuestions();
+            
+            quizData.forEach(session => {
+                session.questions.forEach(q => {
+                    const userAnswer = userAnswers[q.id];
+                    const questionCard = document.getElementById(`question-${q.id}`);
+                    const options = questionCard.querySelectorAll('.option');
+                    
+                    options.forEach((option, index) => {
+                        option.classList.add('disabled');
+                        
+                        // Apply GREEN styling directly with inline styles for correct answer
+                        if (index === q.correct) {
+                            option.style.border = '3px solid #28a745';
+                            option.style.background = '#d4edda';
+                            option.style.fontWeight = 'bold';
+                            option.style.color = '#155724';
+                        }
+                        
+                        // Apply RED styling directly with inline styles for wrong answer (only if user selected it)
+                        if (index === userAnswer && userAnswer !== q.correct) {
+                            option.style.border = '3px solid #dc3545';
+                            option.style.background = '#f8d7da';
+                            option.style.color = '#721c24';
+                        }
+                    });
+                    
+                    if (userAnswer === q.correct) {
+                        correctCount++;
+                        questionCard.classList.add('answered-correct');
+                    } else {
+                        questionCard.classList.add('answered-wrong');
+                    }
+                    
+                    const infoBox = document.getElementById(`info-${q.id}`);
+                    infoBox.classList.add('show');
+                });
+            });
+            
+            const percentage = Math.round((correctCount / total) * 100);
+            document.getElementById('scoreText').innerHTML = `
+                You scored <strong>${correctCount}</strong> out of <strong>${total}</strong> (${percentage}%)
+                <br><br>
+                ${percentage >= 90 ? '🌟 Outstanding! You have excellent knowledge of Web3.js development!' :
+                  percentage >= 80 ? '🎉 Great job! You have a strong understanding of Web3.js concepts!' :
+                  percentage >= 70 ? '👍 Good work! You have a solid foundation in Web3.js development!' :
+                  percentage >= 60 ? '📚 Not bad! Review the concepts and try again to improve!' :
+                  '💪 Keep learning! Review the training materials and retake the quiz!'}
+            `;
+            
+            document.getElementById('results').classList.add('show');
+            document.getElementById('submitBtn').style.display = 'none';
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function restartQuiz() {
+            userAnswers = {};
+            document.getElementById('results').classList.remove('show');
+            document.getElementById('submitBtn').style.display = 'inline-block';
+            document.getElementById('submitBtn').disabled = true;
+            
+            quizData.forEach(session => {
+                session.questions.forEach(q => {
+                    const questionCard = document.getElementById(`question-${q.id}`);
+                    const options = questionCard.querySelectorAll('.option');
+                    const infoBox = document.getElementById(`info-${q.id}`);
+                    
+                    questionCard.classList.remove('answered-correct', 'answered-wrong');
+                    infoBox.classList.remove('show');
+                    
+                    options.forEach(option => {
+                        option.classList.remove('selected', 'disabled');
+                        option.style.border = '';
+                        option.style.background = '';
+                        option.style.fontWeight = '';
+                        option.style.color = '';
+                    });
+                });
+            });
+            
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        renderQuiz();
+    </script>
+</body>
+</html>
